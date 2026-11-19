@@ -6,108 +6,248 @@
   <title>Transfer</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fafafa; color: #1a1a1a; }
-    main { width: 100%; max-width: 400px; padding: 32px 20px; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: #fafafa;
+      color: #111;
+      padding: 20px;
+    }
+    main {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      border: 1px solid #eaeaea;
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
 
-    /* header */
-    .logo { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 32px; }
+    .brand {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
 
-    /* form */
-    input[type="email"] { width: 100%; font-size: 15px; padding: 12px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; outline: none; transition: border-color .2s; background: #fff; }
-    input[type="email"]:focus { border-color: #1a1a1a; }
+    /* Form */
+    input[type="email"] {
+      width: 100%;
+      font-size: 15px;
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .2s;
+      background: #fafafa;
+    }
+    input[type="email"]:focus {
+      border-color: #111;
+      background: #fff;
+    }
 
-    /* buttons */
-    .btn { display: block; width: 100%; font-size: 14px; font-weight: 500; padding: 11px 0; border: none; border-radius: 10px; cursor: pointer; transition: opacity .15s; text-align: center; }
-    .btn:active { opacity: .7; }
-    .btn-primary { background: #1a1a1a; color: #fff; }
-    .btn-outline { background: transparent; color: #1a1a1a; border: 1.5px solid #e0e0e0; }
-    .btn-ghost { background: transparent; color: #888; font-size: 13px; padding: 8px 0; }
+    /* Buttons */
+    .btn {
+      display: block;
+      width: 100%;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 0;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .15s ease;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    .btn:active { transform: scale(0.99); }
+    .btn-primary {
+      background: #111;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #262626; }
+    .btn-cta {
+      background: #2563eb;
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 14px;
+    }
+    .btn-cta:hover { background: #1d4ed8; }
+    .btn-outline {
+      background: #fff;
+      color: #111;
+      border: 1px solid #ddd;
+    }
+    .btn-outline:hover {
+      border-color: #999;
+      background: #fafafa;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #777;
+      font-size: 13px;
+      padding: 8px 0;
+    }
+    .btn-ghost:hover { color: #111; }
 
-    /* spacing */
-    .mt-sm { margin-top: 8px; }
-    .mt-md { margin-top: 12px; }
-    .mt-lg { margin-top: 24px; }
+    .mt-sm { margin-top: 10px; }
+    .mt-md { margin-top: 16px; }
 
-    /* badge */
-    .badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-    .badge-active { background: #e8f5e9; color: #2e7d32; }
-    .badge-inactive { background: #f5f5f5; color: #999; }
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .badge-active { background: #ecfdf5; color: #059669; }
+    .badge-inactive { background: #f3f4f6; color: #6b7280; }
 
-    /* user header */
-    .user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .user-email { font-size: 14px; color: #555; }
+    /* User Header */
+    .user-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 18px;
+    }
+    .user-email {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-    /* pricing row */
-    .price-row { display: flex; gap: 8px; }
-    .price-row .btn { flex: 1; }
+    /* Valid Info */
+    .valid-info {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
 
-    /* alias box */
-    .alias-box { background: #fff; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 12px 14px; font-size: 13px; font-family: "SF Mono", "Fira Code", monospace; color: #333; word-break: break-all; cursor: pointer; position: relative; transition: border-color .2s; }
-    .alias-box:hover { border-color: #1a1a1a; }
-    .alias-box::after { content: "点击复制"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #aaa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    /* Price Section */
+    .price-grid {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .price-grid .btn { flex: 1; }
 
-    /* section */
-    .section { margin-top: 28px; }
-    .section-label { font-size: 11px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    /* Account Card */
+    .account-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .account-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .account-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: #1f2937;
+      word-break: break-all;
+      background: #fff;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color .15s;
+    }
+    .account-value:hover { border-color: #111; }
+    .account-value::after {
+      content: "复制";
+      font-size: 11px;
+      color: #6b7280;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin-left: 8px;
+    }
 
-    /* mails */
-    .mail-item { background: #fff; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border-color .2s; }
-    .mail-item:hover { border-color: #1a1a1a; }
-    .mail-item summary { font-size: 14px; font-weight: 500; list-style: none; }
-    .mail-item summary::-webkit-details-marker { display: none; }
-    .mail-meta { font-size: 12px; color: #999; margin-top: 4px; }
-    .mail-body { font-size: 13px; color: #555; white-space: pre-wrap; word-break: break-word; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; line-height: 1.6; }
+    /* Hint text */
+    .hint {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
 
-    /* toast */
-    #msg { font-size: 13px; color: #888; min-height: 1.4em; margin-top: 16px; text-align: center; transition: opacity .2s; }
-    #msg:empty { opacity: 0; }
+    /* Toast */
+    #msg {
+      font-size: 13px;
+      color: #666;
+      min-height: 1.4em;
+      margin-top: 16px;
+      text-align: center;
+    }
 
-    /* divider */
-    .divider { height: 1px; background: #eee; margin: 20px 0; }
-
-    /* plan valid */
-    .valid-until { font-size: 12px; color: #888; margin-top: 4px; }
+    .divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 20px 0 12px;
+    }
   </style>
 </head>
 <body>
   <main>
-    <div class="logo">Transfer</div>
+    <div class="brand">Transfer</div>
 
-    <!-- login -->
+    <!-- 登录表单 -->
     <form id="login">
-      <input type="email" id="email" placeholder="your@email.com" required>
-      <button class="btn btn-primary mt-sm" type="submit">发送登录链接</button>
+      <input type="email" id="email" placeholder="输入邮箱继续" required autofocus>
+      <button class="btn btn-primary mt-sm" type="submit">获取登录链接</button>
+      <p class="hint" style="text-align:center;">免密登录，链接将发送至你的邮箱</p>
     </form>
 
-    <!-- dashboard -->
+    <!-- 会员看板 -->
     <div id="me" hidden>
       <div class="user-header">
         <span class="user-email" id="who"></span>
         <span id="statusBadge" class="badge badge-inactive">未开通</span>
       </div>
-      <div id="validUntil" class="valid-until" hidden></div>
 
-      <!-- pricing -->
+      <!-- 未开通：购买区域 -->
       <div id="pricingSection">
-        <div class="price-row">
+        <p style="font-size: 14px; font-weight: 500; color: #111;">选择开通方案</p>
+        <div class="price-grid">
           <button id="payOnce" class="btn btn-primary">30 天 · $35</button>
           <button id="payMonth" class="btn btn-outline">月付 · $35/月</button>
         </div>
-      </div>
-      <button id="portal" class="btn btn-outline mt-sm" hidden>管理订阅</button>
-
-      <!-- inbox -->
-      <div class="section">
-        <div class="section-label">收信邮箱</div>
-        <div class="alias-box" id="alias" role="button" tabindex="0"></div>
+        <p class="hint">付款后立即为你分配专属账号进入 Claude Team</p>
       </div>
 
-      <div class="section">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <span class="section-label" style="margin-bottom:0;">收件箱</span>
-          <button id="refresh" class="btn-ghost" style="width:auto;padding:4px 0;">刷新</button>
+      <!-- 已开通：交付区域 -->
+      <div id="activeSection" hidden>
+        <div id="validUntil" class="valid-info"></div>
+
+        <div class="account-card">
+          <div class="account-label">分配的专属账号</div>
+          <div class="account-value" id="alias" title="点击复制账号"></div>
         </div>
-        <div id="mails" class="mt-sm"></div>
+
+        <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">进入 Claude Team</a>
+        <button id="portal" class="btn btn-outline mt-sm" hidden>管理订阅</button>
       </div>
 
       <div class="divider"></div>
@@ -122,56 +262,37 @@
     const $ = id => document.getElementById(id);
     const post = (path, body) => fetch(API + path, { method: "POST", body: JSON.stringify(body) }).then(r => r.json());
     const fmtDate = ms => new Date(ms).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
-    const toast = (t, dur) => { $("msg").textContent = t; if (dur) setTimeout(() => { if ($("msg").textContent === t) $("msg").textContent = ""; }, dur); };
+    const toast = (t, dur = 3000) => {
+      $("msg").textContent = t;
+      if (dur) setTimeout(() => { if ($("msg").textContent === t) $("msg").textContent = ""; }, dur);
+    };
 
     async function loadMe() {
       const session = localStorage.getItem("session");
       if (!session) return null;
       const r = await post("/me", { session });
       if (r.error) return null;
+
       $("alias").textContent = r.alias;
+
       if (r.active) {
         $("statusBadge").textContent = "已开通";
         $("statusBadge").className = "badge badge-active";
-        $("validUntil").textContent = `有效期至 ${fmtDate(r.until)}`;
-        $("validUntil").hidden = false;
+        $("validUntil").textContent = `会员有效期至 ${fmtDate(r.until)}`;
         $("pricingSection").hidden = true;
+        $("activeSection").hidden = false;
+        $("portal").hidden = !r.hasSub;
       } else {
         $("statusBadge").textContent = "未开通";
         $("statusBadge").className = "badge badge-inactive";
-        $("validUntil").hidden = true;
         $("pricingSection").hidden = false;
+        $("activeSection").hidden = true;
       }
-      $("portal").hidden = !r.hasSub;
       return r;
     }
 
-    async function loadMails() {
-      const session = localStorage.getItem("session");
-      if (!session) return;
-      const r = await post("/mails", { session });
-      if (r.error) { toast(r.error); return; }
-      $("alias").textContent = r.alias;
-      const box = $("mails");
-      if (!r.mails.length) { box.innerHTML = '<p style="font-size:13px;color:#bbb;text-align:center;padding:20px 0;">暂无邮件</p>'; return; }
-      box.replaceChildren(...r.mails.map(m => {
-        const d = document.createElement("details");
-        d.className = "mail-item";
-        const s = document.createElement("summary");
-        s.textContent = m.subject;
-        const meta = document.createElement("div");
-        meta.className = "mail-meta";
-        meta.textContent = `${m.from} · ${m.date}`;
-        const pre = document.createElement("div");
-        pre.className = "mail-body";
-        pre.textContent = m.body;
-        d.append(s, meta, pre);
-        return d;
-      }));
-    }
-
     async function pay(plan) {
-      toast("正在跳转…");
+      toast("正在跳转收银台…", 0);
       const r = await post("/pay", { session: localStorage.getItem("session"), plan });
       if (r.url) location.href = r.url;
       else toast(r.error || "创建支付失败");
@@ -181,7 +302,7 @@
       const raw = sessionStorage.getItem("sso");
       if (!raw) return;
       const sso = JSON.parse(raw);
-      toast("正在验证授权…");
+      toast("正在校验 Claude Team 授权…", 0);
       const r = await post("/sso/assert", { session, reqId: sso.reqId, relay: sso.relay });
       if (!r.samlResponse) {
         if (!r.needPay) sessionStorage.removeItem("sso");
@@ -194,7 +315,9 @@
       form.action = r.acs;
       for (const [k, v] of [["SAMLResponse", r.samlResponse], ["RelayState", r.relay]]) {
         const inp = document.createElement("input");
-        inp.type = "hidden"; inp.name = k; inp.value = v;
+        inp.type = "hidden";
+        inp.name = k;
+        inp.value = v;
         form.append(inp);
       }
       document.body.append(form);
@@ -202,13 +325,16 @@
     }
 
     async function pollPaid() {
-      toast("支付成功，正在同步…");
-      for (let i = 0; i < 4; i++) {
+      toast("支付成功，正在同步会员状态…", 0);
+      for (let i = 0; i < 5; i++) {
         const me = await loadMe();
-        if (me?.active) { toast("会员已开通 ✓", 3000); return; }
+        if (me?.active) {
+          toast("会员已成功开通！", 3000);
+          return;
+        }
         await new Promise(r => setTimeout(r, 1500));
       }
-      toast("支付已收到，请稍后刷新");
+      toast("已收到支付，若未立即更新请刷新页面");
     }
 
     function render() {
@@ -217,34 +343,42 @@
       $("login").hidden = !!email;
       $("me").hidden = !email;
       $("who").textContent = email || "";
-      $("alias").textContent = email ? `${email.replace("@", "--")}@buyai.win` : "";
       if (email && session) {
         loadMe();
-        loadMails();
         if (sessionStorage.getItem("sso")) finishSso(session);
       }
     }
 
-    // events
+    // 事件绑定
     $("login").onsubmit = async e => {
       e.preventDefault();
-      toast("发送中…");
+      toast("发送中…", 0);
       const r = await post("/send", { email: $("email").value });
-      toast(r.ok ? "已发送，请查收邮箱" : r.error);
+      toast(r.ok ? "登录链接已发送，请查收邮箱（10分钟内有效）" : (r.error || "发送失败"));
     };
+
     $("payOnce").onclick = () => pay("once");
     $("payMonth").onclick = () => pay("month");
+
     $("portal").onclick = async () => {
-      toast("正在打开…");
+      toast("正在打开订阅管理…", 0);
       const r = await post("/portal", { session: localStorage.getItem("session") });
       if (r.url) location.href = r.url;
-      else toast(r.error || "无法打开");
+      else toast(r.error || "无法打开订阅管理");
     };
-    $("alias").onclick = () => navigator.clipboard.writeText($("alias").textContent).then(() => toast("已复制 ✓", 2000));
-    $("refresh").onclick = () => { loadMe(); loadMails(); };
-    $("logout").onclick = () => { localStorage.clear(); sessionStorage.clear(); $("mails").replaceChildren(); $("msg").textContent = ""; render(); };
 
-    // init
+    $("alias").onclick = () => {
+      navigator.clipboard.writeText($("alias").textContent).then(() => toast("账号已复制到剪贴板 ✓", 2000));
+    };
+
+    $("logout").onclick = () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      $("msg").textContent = "";
+      render();
+    };
+
+    // 初始化路由参数
     const hash = new URLSearchParams(location.hash.slice(1));
     const token = hash.get("token");
     if (hash.has("sso")) {
@@ -260,9 +394,9 @@
         if (r.session) {
           localStorage.setItem("session", r.session);
           localStorage.setItem("email", r.email);
-          toast("登录成功 ✓", 3000);
+          toast("登录成功", 2000);
         } else {
-          toast(r.error);
+          toast(r.error || "登录失败");
         }
         render();
       });
