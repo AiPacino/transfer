@@ -130,6 +130,32 @@
       white-space: nowrap;
     }
 
+    /* Sent Card */
+    .sent-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .sent-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #166534;
+      margin-bottom: 6px;
+    }
+    .sent-target {
+      font-size: 13px;
+      color: #15803d;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+    .sent-desc {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
     /* Valid Info */
     .valid-info {
       font-size: 13px;
@@ -242,12 +268,23 @@
   <main>
     <div class="brand">Transfer</div>
 
-    <!-- 登录表单 -->
-    <form id="login">
-      <input type="email" id="email" placeholder="输入邮箱继续" required autofocus>
-      <button class="btn btn-primary mt-sm" type="submit">获取登录链接</button>
-      <p class="hint" style="text-align:center;">免密登录，链接将发送至你的邮箱</p>
-    </form>
+    <!-- 登录模块 -->
+    <div id="loginSection">
+      <form id="login">
+        <input type="email" id="email" placeholder="输入邮箱继续" required autofocus>
+        <button id="btnSend" class="btn btn-primary mt-sm" type="submit">获取登录链接</button>
+        <p class="hint" style="text-align:center;">免密登录，链接将发送至你的邮箱</p>
+      </form>
+
+      <!-- 发送成功显式卡片 -->
+      <div id="loginSent" class="sent-card" hidden>
+        <div class="sent-title">✉️ 登录链接已发送</div>
+        <div class="sent-target">发送至：<strong id="sentEmail"></strong></div>
+        <div class="sent-desc">请查收邮件并点击链接登录（10 分钟内有效）。<br>如未收到，请检查垃圾箱。</div>
+        <button id="btnResend" class="btn btn-outline mt-md" type="button" disabled>重新获取链接 (<span id="resendTimer">60</span>s)</button>
+        <button id="btnBackToLogin" class="btn btn-ghost" style="margin-top:4px;" type="button">更换其他邮箱</button>
+      </div>
+    </div>
 
     <!-- 会员看板 -->
     <div id="me" hidden>
@@ -376,7 +413,7 @@
     function render() {
       const email = localStorage.getItem("email");
       const session = localStorage.getItem("session");
-      $("login").hidden = !!email;
+      $("loginSection").hidden = !!email;
       $("me").hidden = !email;
       $("who").textContent = email || "";
       if (email && session) {
@@ -385,12 +422,57 @@
       }
     }
 
-    // 事件绑定
-    $("login").onsubmit = async e => {
+    // 登录与重发逻辑
+    let timerId = null;
+    function startCountdown() {
+      let remain = 60;
+      $("btnResend").disabled = true;
+      $("btnResend").textContent = `重新获取链接 (${remain}s)`;
+      if (timerId) clearInterval(timerId);
+      timerId = setInterval(() => {
+        remain--;
+        if (remain <= 0) {
+          clearInterval(timerId);
+          timerId = null;
+          $("btnResend").disabled = false;
+          $("btnResend").textContent = "重新获取链接";
+        } else {
+          $("btnResend").textContent = `重新获取链接 (${remain}s)`;
+        }
+      }, 1000);
+    }
+
+    async function doSend(email) {
+      $("btnSend").disabled = true;
+      $("btnSend").textContent = "发送中…";
+      const r = await post("/send", { email });
+      $("btnSend").disabled = false;
+      $("btnSend").textContent = "获取登录链接";
+      if (r.ok) {
+        $("sentEmail").textContent = email;
+        $("login").hidden = true;
+        $("loginSent").hidden = false;
+        startCountdown();
+      } else {
+        toast(r.error || "发送失败，请稍后重试", 4000);
+      }
+    }
+
+    $("login").onsubmit = e => {
       e.preventDefault();
-      toast("发送中…", 0);
-      const r = await post("/send", { email: $("email").value });
-      toast(r.ok ? "登录链接已发送，请查收邮箱（10分钟内有效）" : (r.error || "发送失败"));
+      const email = $("email").value.trim();
+      if (email) doSend(email);
+    };
+
+    $("btnResend").onclick = () => {
+      const email = $("sentEmail").textContent;
+      if (email) doSend(email);
+    };
+
+    $("btnBackToLogin").onclick = () => {
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      $("login").hidden = false;
+      $("loginSent").hidden = true;
     };
 
     // 方案选择与付款
@@ -427,6 +509,9 @@
     $("logout").onclick = () => {
       localStorage.clear();
       sessionStorage.clear();
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      $("login").hidden = false;
+      $("loginSent").hidden = true;
       $("msg").textContent = "";
       render();
     };
