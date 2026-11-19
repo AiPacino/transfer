@@ -240,6 +240,34 @@
       margin-left: 8px;
     }
 
+    /* Login Guide */
+    .login-guide {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .guide-title {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+    .guide-list {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .guide-list li {
+      margin-bottom: 4px;
+    }
+    .guide-list li:last-child {
+      margin-bottom: 0;
+    }
+
     /* Hint text */
     .hint {
       font-size: 12px;
@@ -316,9 +344,17 @@
         <div id="validUntil" class="valid-info"></div>
 
         <div class="account-card">
-          <div class="account-guide">您的 Claude 官网登录账号如下：</div>
+          <div class="account-guide">您的 Claude 官网登录名：</div>
           <div class="account-value" id="alias" title="点击复制账号"></div>
-          <p class="hint" style="margin-top:8px;margin-bottom:0;color:#6b7280;">点击上方账号可一键复制，前往官网后粘贴该账号即可登录</p>
+        </div>
+
+        <div class="login-guide">
+          <div class="guide-title">💡 官网登录说明</div>
+          <ol class="guide-list">
+            <li>上面的账号是您的 <strong>Claude 登录名</strong>。</li>
+            <li>点击下方按钮会自动复制该账号，并直接跳转到 <strong>Claude 官网</strong>。</li>
+            <li>我们是<strong>免密登录</strong>：在官网输入用户名后，我们会自动帮您验证登录请求，无需输入密码即可直接进入。</li>
+          </ol>
         </div>
 
         <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">前往 Claude 官网登录</a>
@@ -505,7 +541,7 @@
     $("btnClaude").onclick = () => {
       if ($("alias").textContent) {
         navigator.clipboard.writeText($("alias").textContent).then(() => {
-          toast("已自动复制您的账号，正在前往 Claude 官网…", 2500);
+          toast("已自动复制您的登录名，正在前往 Claude 官网…", 2500);
         });
       }
     };
