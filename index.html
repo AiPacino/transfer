@@ -141,9 +141,40 @@
     .price-grid {
       display: flex;
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
-    .price-grid .btn { flex: 1; }
+    .plan-card {
+      flex: 1;
+      background: #fafafa;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      outline: none;
+    }
+    .plan-card:hover {
+      border-color: #aaa;
+    }
+    .plan-card.active {
+      background: #fff;
+      border-color: #111;
+      box-shadow: 0 0 0 1px #111;
+    }
+    .plan-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .plan-price {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+    }
 
     /* Account Card */
     .account-card {
@@ -222,17 +253,24 @@
     <div id="me" hidden>
       <div class="user-header">
         <span class="user-email" id="who"></span>
-        <span id="statusBadge" class="badge badge-inactive">未开通</span>
+        <span id="statusBadge" class="badge badge-inactive">未开通 Claude 账户</span>
       </div>
 
       <!-- 未开通：购买区域 -->
       <div id="pricingSection">
-        <p style="font-size: 14px; font-weight: 500; color: #111;">选择开通方案</p>
+        <p style="font-size: 13px; font-weight: 500; color: #4b5563;">选择开通方案</p>
         <div class="price-grid">
-          <button id="payOnce" class="btn btn-primary">30 天 · $35</button>
-          <button id="payMonth" class="btn btn-outline">月付 · $35/月</button>
+          <button id="planOnce" type="button" class="plan-card active">
+            <span class="plan-name">30 天单次</span>
+            <span class="plan-price">$35</span>
+          </button>
+          <button id="planMonth" type="button" class="plan-card">
+            <span class="plan-name">按月续费</span>
+            <span class="plan-price">$35/月</span>
+          </button>
         </div>
-        <p class="hint">付款后立即为你分配专属账号进入 Claude Team</p>
+        <button id="btnPay" class="btn btn-primary mt-md" type="button">点击付款开通 Claude 账户</button>
+        <p class="hint" style="text-align:center;">付款后立即为你分配专属账号进入 Claude</p>
       </div>
 
       <!-- 已开通：交付区域 -->
@@ -274,14 +312,14 @@
       $("alias").textContent = r.alias;
 
       if (r.active) {
-        $("statusBadge").textContent = "已开通";
+        $("statusBadge").textContent = "已开通 Claude 账户";
         $("statusBadge").className = "badge badge-active";
         $("validUntil").textContent = `会员有效期至 ${fmtDate(r.until)}`;
         $("pricingSection").hidden = true;
         $("activeSection").hidden = false;
         $("portal").hidden = !r.hasSub;
       } else {
-        $("statusBadge").textContent = "未开通";
+        $("statusBadge").textContent = "未开通 Claude 账户";
         $("statusBadge").className = "badge badge-inactive";
         $("pricingSection").hidden = false;
         $("activeSection").hidden = true;
@@ -355,8 +393,19 @@
       toast(r.ok ? "登录链接已发送，请查收邮箱（10分钟内有效）" : (r.error || "发送失败"));
     };
 
-    $("payOnce").onclick = () => pay("once");
-    $("payMonth").onclick = () => pay("month");
+    // 方案选择与付款
+    let selectedPlan = "once";
+    $("planOnce").onclick = () => {
+      selectedPlan = "once";
+      $("planOnce").classList.add("active");
+      $("planMonth").classList.remove("active");
+    };
+    $("planMonth").onclick = () => {
+      selectedPlan = "month";
+      $("planMonth").classList.add("active");
+      $("planOnce").classList.remove("active");
+    };
+    $("btnPay").onclick = () => pay(selectedPlan);
 
     $("portal").onclick = async () => {
       toast("正在打开订阅管理…", 0);
