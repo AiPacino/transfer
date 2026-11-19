@@ -271,18 +271,19 @@
     <!-- 登录模块 -->
     <div id="loginSection">
       <form id="login">
-        <input type="email" id="email" placeholder="输入邮箱继续" required autofocus>
+        <p style="font-size: 14px; font-weight: 500; color: #1f2937; margin-bottom: 10px; line-height: 1.4;">输入您的邮箱获取 Claude 账户登录信息</p>
+        <input type="email" id="email" placeholder="输入您的常用邮箱（如 your@gmail.com）" required autofocus>
         <button id="btnSend" class="btn btn-primary mt-sm" type="submit">获取登录链接</button>
-        <p class="hint" style="text-align:center;">免密登录，链接将发送至你的邮箱</p>
+        <p class="hint" style="text-align:center;">免密安全登录，我们会向该邮箱发送一条验证链接</p>
       </form>
 
       <!-- 发送成功显式卡片 -->
       <div id="loginSent" class="sent-card" hidden>
-        <div class="sent-title">✉️ 登录链接已发送</div>
-        <div class="sent-target">发送至：<strong id="sentEmail"></strong></div>
-        <div class="sent-desc">请查收邮件并点击链接登录（10 分钟内有效）。<br>如未收到，请检查垃圾箱。</div>
-        <button id="btnResend" class="btn btn-outline mt-md" type="button" disabled>重新获取链接 (<span id="resendTimer">60</span>s)</button>
-        <button id="btnBackToLogin" class="btn btn-ghost" style="margin-top:4px;" type="button">更换其他邮箱</button>
+        <div class="sent-title">✉️ 登录邮件已发送</div>
+        <div class="sent-target">已发送至：<strong id="sentEmail"></strong></div>
+        <div class="sent-desc">请打开您的邮箱，点击邮件中的链接完成登录（10 分钟内有效）。<br>如果收件箱未看到，请检查垃圾邮件。</div>
+        <button id="btnResend" class="btn btn-outline mt-md" type="button" disabled>重新发送邮件 (<span id="resendTimer">60</span>s)</button>
+        <button id="btnBackToLogin" class="btn btn-ghost" style="margin-top:4px;" type="button">返回更换邮箱</button>
       </div>
     </div>
 
@@ -295,19 +296,19 @@
 
       <!-- 未开通：购买区域 -->
       <div id="pricingSection">
-        <p style="font-size: 13px; font-weight: 500; color: #4b5563;">选择开通方案</p>
+        <p style="font-size: 13px; font-weight: 500; color: #4b5563;">请选择开通时长：</p>
         <div class="price-grid">
           <button id="planOnce" type="button" class="plan-card active">
-            <span class="plan-name">30 天单次</span>
+            <span class="plan-name">30 天使用权限</span>
             <span class="plan-price">$35</span>
           </button>
           <button id="planMonth" type="button" class="plan-card">
-            <span class="plan-name">按月续费</span>
+            <span class="plan-name">按月自动续费</span>
             <span class="plan-price">$35/月</span>
           </button>
         </div>
         <button id="btnPay" class="btn btn-primary mt-md" type="button">点击付款开通 Claude 账户</button>
-        <p class="hint" style="text-align:center;">付款后立即为你分配专属账号进入 Claude</p>
+        <p class="hint" style="text-align:center;">付款成功后，立即为您生成专属账号并在 Claude 官网使用</p>
       </div>
 
       <!-- 已开通：交付区域 -->
@@ -315,12 +316,13 @@
         <div id="validUntil" class="valid-info"></div>
 
         <div class="account-card">
-          <div class="account-guide">请使用下方账号在 Claude 官网登录：</div>
+          <div class="account-guide">您的 Claude 官网登录账号如下：</div>
           <div class="account-value" id="alias" title="点击复制账号"></div>
+          <p class="hint" style="margin-top:8px;margin-bottom:0;color:#6b7280;">点击上方账号可一键复制，前往官网后粘贴该账号即可登录</p>
         </div>
 
-        <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">进入 Claude</a>
-        <button id="portal" class="btn btn-outline mt-sm" hidden>管理订阅</button>
+        <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">前往 Claude 官网登录</a>
+        <button id="portal" class="btn btn-outline mt-sm" hidden>管理我的自动续费</button>
       </div>
 
       <div class="divider"></div>
@@ -365,21 +367,21 @@
     }
 
     async function pay(plan) {
-      toast("正在跳转收银台…", 0);
+      toast("正在前往收银台…", 0);
       const r = await post("/pay", { session: localStorage.getItem("session"), plan });
       if (r.url) location.href = r.url;
-      else toast(r.error || "创建支付失败");
+      else toast(r.error || "创建支付失败，请稍后再试");
     }
 
     async function finishSso(session) {
       const raw = sessionStorage.getItem("sso");
       if (!raw) return;
       const sso = JSON.parse(raw);
-      toast("正在校验 Claude Team 授权…", 0);
+      toast("正在为您登录 Claude 官网…", 0);
       const r = await post("/sso/assert", { session, reqId: sso.reqId, relay: sso.relay });
       if (!r.samlResponse) {
         if (!r.needPay) sessionStorage.removeItem("sso");
-        toast(r.error || "SSO 授权失败");
+        toast(r.error || "登录授权失败，请重试");
         return;
       }
       sessionStorage.removeItem("sso");
@@ -398,16 +400,16 @@
     }
 
     async function pollPaid() {
-      toast("支付成功，正在同步会员状态…", 0);
+      toast("付款成功！正在为您生成专属账号…", 0);
       for (let i = 0; i < 5; i++) {
         const me = await loadMe();
         if (me?.active) {
-          toast("会员已成功开通！", 3000);
+          toast("开通成功！专属账号已生成，请在下方查看", 4000);
           return;
         }
         await new Promise(r => setTimeout(r, 1500));
       }
-      toast("已收到支付，若未立即更新请刷新页面");
+      toast("已收到付款，若状态未立即刷新请手动刷新页面");
     }
 
     function render() {
@@ -427,7 +429,7 @@
     function startCountdown() {
       let remain = 60;
       $("btnResend").disabled = true;
-      $("btnResend").textContent = `重新获取链接 (${remain}s)`;
+      $("btnResend").textContent = `重新发送邮件 (${remain}s)`;
       if (timerId) clearInterval(timerId);
       timerId = setInterval(() => {
         remain--;
@@ -435,9 +437,9 @@
           clearInterval(timerId);
           timerId = null;
           $("btnResend").disabled = false;
-          $("btnResend").textContent = "重新获取链接";
+          $("btnResend").textContent = "重新发送邮件";
         } else {
-          $("btnResend").textContent = `重新获取链接 (${remain}s)`;
+          $("btnResend").textContent = `重新发送邮件 (${remain}s)`;
         }
       }, 1000);
     }
@@ -497,12 +499,14 @@
     };
 
     $("alias").onclick = () => {
-      navigator.clipboard.writeText($("alias").textContent).then(() => toast("账号已复制到剪贴板 ✓", 2000));
+      navigator.clipboard.writeText($("alias").textContent).then(() => toast("账号已复制到剪贴板，去官网粘贴即可登录 ✓", 2500));
     };
 
     $("btnClaude").onclick = () => {
       if ($("alias").textContent) {
-        navigator.clipboard.writeText($("alias").textContent);
+        navigator.clipboard.writeText($("alias").textContent).then(() => {
+          toast("已自动复制您的账号，正在前往 Claude 官网…", 2500);
+        });
       }
     };
 
