@@ -3,3 +3,4 @@ project.md
 saml.crt
 *.pem
 *.key
+.workbuddy-ai/
