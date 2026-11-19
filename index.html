@@ -151,15 +151,13 @@
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: 14px;
-      margin-top: 14px;
+      margin-top: 10px;
     }
-    .account-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+    .account-guide {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 8px;
     }
     .account-value {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -242,11 +240,11 @@
         <div id="validUntil" class="valid-info"></div>
 
         <div class="account-card">
-          <div class="account-label">分配的专属账号</div>
+          <div class="account-guide">请使用下方账号在 Claude 官网登录：</div>
           <div class="account-value" id="alias" title="点击复制账号"></div>
         </div>
 
-        <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">进入 Claude Team</a>
+        <a id="btnClaude" class="btn btn-cta" href="https://claude.ai/login" target="_blank" rel="noopener noreferrer">进入 Claude</a>
         <button id="portal" class="btn btn-outline mt-sm" hidden>管理订阅</button>
       </div>
 
@@ -369,6 +367,12 @@
 
     $("alias").onclick = () => {
       navigator.clipboard.writeText($("alias").textContent).then(() => toast("账号已复制到剪贴板 ✓", 2000));
+    };
+
+    $("btnClaude").onclick = () => {
+      if ($("alias").textContent) {
+        navigator.clipboard.writeText($("alias").textContent);
+      }
     };
 
     $("logout").onclick = () => {
